@@ -8,21 +8,18 @@ impl CalibrationEquation {
         let mut stack: Vec<(u64, &[u64])> = Vec::with_capacity(self.numbers.len() * 2);
         stack.push((self.test_value, &self.numbers));
 
-        while !stack.is_empty() {
-            let (test_value, numbers) = stack.pop().unwrap();
-            let last_number = *numbers.last().unwrap();
+        while let Some((test_value, numbers)) = stack.pop() {
+            if let Some(last_number) = numbers.last() {
+                if numbers.len() > 1 {
+                    if *last_number <= test_value {
+                        stack.push((test_value - last_number, &numbers[0..(numbers.len() - 1)]));
+                    }
 
-            if numbers.len() == 1 {
-                if test_value == last_number {
+                    if (test_value % last_number) == 0 {
+                        stack.push((test_value / last_number, &numbers[0..(numbers.len() - 1)]));
+                    }
+                } else if test_value == *last_number {
                     return true;
-                }
-            } else {
-                if last_number <= test_value {
-                    stack.push((test_value - last_number, &numbers[0..(numbers.len() - 1)]));
-                }
-
-                if (test_value % last_number) == 0 {
-                    stack.push((test_value / last_number, &numbers[0..(numbers.len() - 1)]));
                 }
             }
         }
@@ -34,35 +31,32 @@ impl CalibrationEquation {
         let mut stack: Vec<(u64, &[u64])> = Vec::with_capacity(self.numbers.len() * 3);
         stack.push((self.test_value, &self.numbers));
 
-        while !stack.is_empty() {
-            let (test_value, numbers) = stack.pop().unwrap();
-            let last_number = *numbers.last().unwrap();
-
-            if numbers.len() == 1 {
-                if test_value == last_number {
-                    return true;
-                }
-            } else {
-                if last_number <= test_value {
-                    stack.push((test_value - last_number, &numbers[0..(numbers.len() - 1)]));
-                }
-
-                if (test_value % last_number) == 0 {
-                    stack.push((test_value / last_number, &numbers[0..(numbers.len() - 1)]));
-                }
-
-                let mut test_value_string = test_value.to_string();
-                let last_number_string = last_number.to_string();
-                if (test_value_string.len() > last_number_string.len())
-                    && test_value_string.ends_with(&last_number_string)
-                {
-                    for _ in 0..last_number_string.len() {
-                        test_value_string.pop();
+        while let Some((test_value, numbers)) = stack.pop() {
+            if let Some(last_number) = numbers.last() {
+                if numbers.len() > 1 {
+                    if *last_number <= test_value {
+                        stack.push((test_value - last_number, &numbers[0..(numbers.len() - 1)]));
                     }
-                    stack.push((
-                        test_value_string.parse::<u64>().unwrap(),
-                        &numbers[0..(numbers.len() - 1)],
-                    ));
+
+                    if (test_value % last_number) == 0 {
+                        stack.push((test_value / last_number, &numbers[0..(numbers.len() - 1)]));
+                    }
+
+                    let mut test_value_string = test_value.to_string();
+                    let last_number_string = last_number.to_string();
+                    if (test_value_string.len() > last_number_string.len())
+                        && test_value_string.ends_with(&last_number_string)
+                    {
+                        for _ in 0..last_number_string.len() {
+                            test_value_string.pop();
+                        }
+                        stack.push((
+                            test_value_string.parse::<u64>().unwrap(),
+                            &numbers[0..(numbers.len() - 1)],
+                        ));
+                    }
+                } else if test_value == *last_number {
+                    return true;
                 }
             }
         }
