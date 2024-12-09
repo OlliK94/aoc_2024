@@ -112,14 +112,12 @@ fn process_part2(mut disk_map: Vec<DiskSpace>) -> u64 {
     }
 
     for file_index in (0..files.len()).rev() {
-        let free_disk_location = find_free_disk_space(&disk_map, files[file_index].size);
+        let file = &files[file_index];
+        let free_disk_location = find_free_disk_space(&disk_map, file.size);
         if let Some(location) = free_disk_location {
-            if location < files[file_index].location {
-                for block_index in 0..files[file_index].size {
-                    disk_map.swap(
-                        location + block_index,
-                        files[file_index].location + block_index,
-                    );
+            if location < file.location {
+                for block_index in 0..file.size {
+                    disk_map.swap(location + block_index, file.location + block_index);
                 }
             }
         }
