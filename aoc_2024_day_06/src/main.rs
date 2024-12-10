@@ -70,12 +70,12 @@ impl GuardedArea {
     }
 
     pub fn move_guard(&mut self) {
-        if self.is_guard_leaving() {
-            return;
-        }
-
         while self.is_guard_path_blocked() {
             self.turn_guard_right();
+        }
+
+        if self.is_guard_leaving() {
+            return;
         }
 
         match self.guard_direction {
