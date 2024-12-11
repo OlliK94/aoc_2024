@@ -25,12 +25,11 @@ fn blink(stone: u64) -> (u64, Option<u64>) {
     }
 }
 
-fn process(stones: &[u64], num_blinks: usize) -> usize {
-    let mut stone_counter: HashMap<u64, usize> =
-        stones.iter().map(|stone| (*stone, 1usize)).collect();
+fn process(stones: &[u64], num_blinks: usize) -> u64 {
+    let mut stone_counter: HashMap<u64, u64> = stones.iter().map(|stone| (*stone, 1u64)).collect();
 
     for _ in 0..num_blinks {
-        let mut new_stones: HashMap<u64, usize> = HashMap::with_capacity(stone_counter.len() * 2);
+        let mut new_stones: HashMap<u64, u64> = HashMap::with_capacity(stone_counter.len() * 2);
 
         for (stone, amount) in stone_counter {
             let (new_stone_1, maybe_new_stone_2) = blink(stone);
