@@ -186,7 +186,7 @@ fn process_part2(garden_map: &[Vec<char>]) -> u32 {
     }
 
     // remove padding sides
-    side_map.remove(&1);
+    side_map.remove(&region_map_with_padding[0][0]);
 
     area_map
         .iter()
