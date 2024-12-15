@@ -1,0 +1,9 @@
+[package]
+name = "aoc_2024_day_15"
+version = "0.1.0"
+edition = "2021"
+
+[dev-dependencies]
+test-case = "*"
+
+[dependencies]
