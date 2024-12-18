@@ -1,5 +1,3 @@
-use std::u64;
-
 #[derive(Debug, Clone)]
 struct Computer {
     register_a: u64,
@@ -84,18 +82,17 @@ fn process_part1(mut computer: Computer) -> Result<String, ComputerError> {
     computer.run_program()
 }
 
-fn process_part2(computer: Computer, output: &str) -> u64 {
+fn process_part2(computer: Computer, output: &str) -> Option<u64> {
     let mut stack: Vec<u64> = vec![0];
-    let mut min_result = u64::MAX;
     while let Some(a_init) = stack.pop() {
-        for a_value in 0..8 {
+        for a_value in (0..8).rev() {
             let mut computer_clone = computer.clone();
             let next_a_init = (a_init << 3) + a_value;
             computer_clone.register_a = next_a_init;
             let out = computer_clone.run_program();
             if let Ok(out) = out {
-                if (out == output) && (next_a_init < min_result) {
-                    min_result = next_a_init;
+                if out == output {
+                    return Some(next_a_init);
                 } else if output.ends_with(&out) {
                     stack.push(next_a_init);
                 }
@@ -103,7 +100,7 @@ fn process_part2(computer: Computer, output: &str) -> u64 {
         }
     }
 
-    min_result
+    None
 }
 
 fn main() {
@@ -134,7 +131,11 @@ fn main() {
 
     let output = "2,4,1,2,7,5,4,7,1,3,5,5,0,3,3,0";
     let result_part2 = process_part2(computer, output);
-    println!("result part2: {result_part2}");
+    if let Some(result) = result_part2 {
+        println!("result part2: {result}");
+    } else {
+        println!("result part2: none");
+    }
 }
 
 #[cfg(test)]
